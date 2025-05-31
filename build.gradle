@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.qameta.allure:allure-selenide:2.29.0'
+    implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.29.0'
+    implementation 'com.codeborne:selenide:7.5.1'
+    implementation 'org.testng:testng:7.10.2'
+    implementation 'commons-io:commons-io:2.14.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+}
+
+test {
+    useTestNG() {
+        suites 'src/test/resources/testNG-functional.xml'
+        suites 'src/test/resources/testNG-UI.xml'
+        suites 'src/test/resources/testNG-Cookies.xml'
+        suites 'src/test/resources/testNG-TestAge.xml'
+    }
+    systemProperty 'allure.results.directory', "${project.layout.buildDirectory.get().asFile}/allure-results"
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Functional tests">
+    <test name="Searching test">
+        <parameter name="baseUrl" value="https://duckduckgo.com"></parameter>
+        <parameter name="browser" value="chrome"></parameter>
+        <parameter name="pageType" value="DUCKGO"></parameter>
+        <classes>
+            <class name="functional.DuckGoSearchTest"></class>
+        </classes>
+    </test>
+</suite>
