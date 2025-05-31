@@ -48,6 +48,7 @@ bin/
 *.class
 *.jar
 *.log
+gradle/
 
 # IntelliJ
 .idea/
