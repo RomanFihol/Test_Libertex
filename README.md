@@ -24,18 +24,16 @@ Functional testing is performed using the [DuckDuckGo](https://duckduckgo.com) s
 ## Running Tests
 
 You can run the automated tests using Gradle:
-
-```bash  
-./gradlew test  
- 
- 
+```bash
+./gradlew test
+```
 Alternatively, you can run TestNG suites individually.
 
 By default, the following TestNG suites are configured:
 
-• testNG-functional.xml
-• testNG-UI.xml
-• testNG-Cookies.xml
+• testNG-functional.xml  
+• testNG-UI.xml  
+• testNG-Cookies.xml  
 • testNG-TestAge.xml
 
 You can edit or comment them in the build.gradle file under the test {} block to control which test suites run.
