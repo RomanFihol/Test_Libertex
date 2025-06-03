@@ -12,7 +12,7 @@ public class GoogleCookieTest extends BaseTest {
     @Test(description = "Reject cookies")
     public void rejectCookiesTest() {
         GoogleMainPage googleSearchMainPage = (GoogleMainPage) openHomePage();
-        googleSearchMainPage.rejectCoockiesIfVisible();
+        googleSearchMainPage.rejectCookiesIfVisible();
         googleSearchMainPage.waitForCookiePresence(coockiName, false, 5);
         Assert.assertFalse(googleSearchMainPage.checkIfCookieIsPresent(coockiName));
     }
@@ -20,7 +20,7 @@ public class GoogleCookieTest extends BaseTest {
     @Test(description = "Accept cookies")
     public void acceptCookiesTest() {
         GoogleMainPage googleSearchMainPage = (GoogleMainPage) openHomePage();
-        googleSearchMainPage.acceptCoockiesIfVisible();
+        googleSearchMainPage.acceptCookiesIfVisible();
         googleSearchMainPage.waitForCookiePresence(coockiName, true, 5);
         Assert.assertTrue(googleSearchMainPage.checkIfCookieIsPresent(coockiName));
     }

@@ -22,7 +22,7 @@ public class DuckGoSearchTest extends BaseTest {
     @Test(description = "Compare search results", dataProvider = "searchRequests", dataProviderClass = SearchDataProvider.class)
     public void checkSearchResults(String request, String expectedResults) {
         DuckGoMainPage duckGoMainPage = (DuckGoMainPage) openHomePage();
-        duckGoMainPage.inputValue(request);
+        duckGoMainPage.fillInput(request);
         DuckGoSearchRelultsPage duckGoSearchRelultsPage = duckGoMainPage.submitSearch();
         duckGoSearchRelultsPage.checkURLs(expectedResults);
         Assert.assertTrue(duckGoSearchRelultsPage.checkURLs(expectedResults));
@@ -31,7 +31,7 @@ public class DuckGoSearchTest extends BaseTest {
     @Test(description = "Check the list of suggestions", dataProvider = "suggestions", dataProviderClass = SearchDataProvider.class)
     public void checkSuggestions(String suggestion) {
         DuckGoMainPage duckGoMainPage = (DuckGoMainPage) openHomePage();
-        duckGoMainPage.inputValue(suggestion);
+        duckGoMainPage.fillInput(suggestion);
         duckGoMainPage.checkSuggestionsAreVisible();
         duckGoMainPage.checkSuggestionsSize(8);
         Assert.assertTrue(duckGoMainPage.allSuggestionsContainKeyword(suggestion));

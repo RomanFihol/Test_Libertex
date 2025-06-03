@@ -1,4 +1,4 @@
-package Base;
+package pages;
 
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.Cookie;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class BasePage {
 
-    WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(10));
+   private WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(10));
 
     public void waitForCookiePresence(String cookieName, boolean shouldExist, int timeoutSeconds) {
         new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(timeoutSeconds)).until(driver -> {
@@ -25,7 +25,7 @@ public class BasePage {
         return cookies.stream().map(Cookie::getName).collect(Collectors.toList());
     }
 
-    public boolean checkIfCookieIsPresent (String coockieName){
-        return getAllCookieNames().contains(coockieName);
+    public boolean checkIfCookieIsPresent (String cookieName){
+        return getAllCookieNames().contains(cookieName);
     }
 }

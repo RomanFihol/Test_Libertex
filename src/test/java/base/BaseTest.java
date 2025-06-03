@@ -1,12 +1,12 @@
 package base;
 
-import Base.BasePage;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.testng.AllureTestNg;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Parameters;
+import pages.BasePage;
 import pages.DuckGoMainPage;
 import pages.GoogleMainPage;
 
@@ -43,16 +43,6 @@ public class BaseTest {
         Configuration.baseUrl = baseUrl;
         this.pageType = PageType.valueOf(pageTypeStr.toUpperCase());
     }
-//    public void setUp() {
-//
-//        String baseUrl = System.getProperty("baseUrl", "https://duckduckgo.com/");
-//        String browser = System.getProperty("browser", "chrome");
-//        String pageTypeStr = System.getProperty("pageType", "DUCKGO");
-//
-//        Configuration.browser = browser;
-//        Configuration.baseUrl = baseUrl;
-//        this.pageType = PageType.valueOf(pageTypeStr.toUpperCase());
-//    }
 
     public BasePage openHomePage() {
         open(Configuration.baseUrl);
@@ -60,4 +50,3 @@ public class BaseTest {
         return pageType.createInstance();
     }
 }
-

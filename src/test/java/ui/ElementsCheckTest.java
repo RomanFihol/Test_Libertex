@@ -10,7 +10,7 @@ public class ElementsCheckTest extends BaseTest {
     @Test
     public void elementsCheck() throws InterruptedException {
        GoogleMainPage googleMainPage = (GoogleMainPage) openHomePage();
-            googleMainPage.acceptCoockiesIfVisible();
+            googleMainPage.acceptCookiesIfVisible();
             Thread.sleep(2000);
             googleMainPage.checkAllTheMainElementsAreVisible();
     }

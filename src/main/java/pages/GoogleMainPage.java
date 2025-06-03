@@ -1,6 +1,5 @@
 package pages;
 
-import Base.BasePage;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
@@ -15,9 +14,6 @@ import static java.util.Map.entry;
 public class GoogleMainPage extends BasePage {
 
     SoftAssert softAssert = new SoftAssert();
-
-    public GoogleMainPage() {
-    }
 
     private final SelenideElement coockiesFrame = $("#CXQnmb");
     private final SelenideElement aboutGoogleButton = $x("//a[contains(text(), 'Sobre Google')]");
@@ -47,8 +43,8 @@ public class GoogleMainPage extends BasePage {
 
     @Step("All elements are presented")
     public void checkAllTheMainElementsAreVisible() {
-        acceptCoockiesIfVisible();
-        Map<String, SelenideElement> elementsTocheck = Map.ofEntries(
+        acceptCookiesIfVisible();
+        Map<String, SelenideElement> elementsToCheck = Map.ofEntries(
                 entry("Main element", googleMainSymbol),
                 entry("About Google", aboutGoogleButton),
                 entry("Shop", shopButton),
@@ -73,7 +69,7 @@ public class GoogleMainPage extends BasePage {
                 entry("Settings button", settingsButton)
         );
 
-        for (Map.Entry<String, SelenideElement> entry : elementsTocheck.entrySet()) {
+        for (Map.Entry<String, SelenideElement> entry : elementsToCheck.entrySet()) {
             String elementName = entry.getKey();
             SelenideElement element = entry.getValue();
             softAssert.assertTrue(element.isDisplayed(), "Element is not presented : " + elementName);
@@ -81,12 +77,12 @@ public class GoogleMainPage extends BasePage {
         softAssert.assertAll();
     }
 
-    public void rejectCoockiesIfVisible() {
+    public void rejectCookiesIfVisible() {
         if (coockiesFrame.is(Condition.visible))
             rejectCookiesSelector.click();
     }
 
-    public void acceptCoockiesIfVisible() {
+    public void acceptCookiesIfVisible() {
         if (coockiesFrame.is(Condition.visible))
             acceptCookiesSelector.click();
     }
