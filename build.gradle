@@ -21,7 +21,6 @@ test {
     useTestNG() {
         suites 'src/test/resources/functional_test.xml'
         suites 'src/test/resources/ui_test.xml'
-        suites 'src/test/resources/cookies.xml'
         suites 'src/test/resources/test_age.xml'
     }
     systemProperty 'allure.results.directory', "${project.layout.buildDirectory.get().asFile}/allure-results"

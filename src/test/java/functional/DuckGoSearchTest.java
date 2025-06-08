@@ -1,51 +1,72 @@
 package functional;
 
 import base.BaseTest;
-import base.SearchDataProvider;
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
 import io.qameta.allure.Step;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.DuckGoMainPage;
-import pages.DuckGoSearchRelultsPage;
+import pages.DuckGoSearchResultsPage;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-
-import static com.codeborne.selenide.Selenide.$$;
 
 public class DuckGoSearchTest extends BaseTest {
 
-    private final ElementsCollection results = $$(".LnpumSThxEWMIsDdAT17 a");
+    @DataProvider(name = "searchRequests")
+    public static Object[][] searchQueries() {
+        return new Object[][]{
+                {"YouTube", "youtube"},
+                {"Linkedin", "Linkedin"}
+        };
+    }
 
-    @Test(description = "Compare search results", dataProvider = "searchRequests", dataProviderClass = SearchDataProvider.class)
+    @DataProvider(name = "suggestions")
+    public static Object[][] suggestions() {
+        return new Object[][]{
+                {"Fire"},
+                {"Water"}
+        };
+    }
+
+    @Test(description = "Compare search results", dataProvider = "searchRequests")
     public void checkSearchResults(String request, String expectedResults) {
-        DuckGoMainPage duckGoMainPage = (DuckGoMainPage) openHomePage();
-        duckGoMainPage.fillInput(request);
-        DuckGoSearchRelultsPage duckGoSearchRelultsPage = duckGoMainPage.submitSearch();
-        duckGoSearchRelultsPage.checkURLs(expectedResults);
-        Assert.assertTrue(duckGoSearchRelultsPage.checkURLs(expectedResults));
+        DuckGoMainPage mainPage = openHomePage();
+        performSearchAndValidateResults(mainPage, request, expectedResults);
     }
 
-    @Test(description = "Check the list of suggestions", dataProvider = "suggestions", dataProviderClass = SearchDataProvider.class)
+    @Test(description = "Check the list of suggestions", dataProvider = "suggestions")
     public void checkSuggestions(String suggestion) {
-        DuckGoMainPage duckGoMainPage = (DuckGoMainPage) openHomePage();
-        duckGoMainPage.fillInput(suggestion);
-        duckGoMainPage.checkSuggestionsAreVisible();
-        duckGoMainPage.checkSuggestionsSize(8);
-        Assert.assertTrue(duckGoMainPage.allSuggestionsContainKeyword(suggestion));
-        duckGoMainPage.clickSuggestion(4);
-        Assert.assertTrue(checkURLs(suggestion));
+        DuckGoMainPage mainPage = openHomePage();
+        performSuggestionValidationFlow(mainPage, suggestion);
     }
 
-    @Step("Check that url contains query")
-    public boolean checkURLs(String expectedValue) {
-        results.shouldBe(CollectionCondition.sizeGreaterThan(0));
-        boolean allContain = results.stream()
-                .map(el -> el.getAttribute("href"))
-                .filter(Objects::nonNull)
-                .anyMatch(href -> href.toLowerCase().contains((expectedValue.toLowerCase(Locale.ROOT))));
-        return allContain;
+    @Test(description = "Check random suggestion", dataProvider = "suggestions")
+    public void checkRandomSuggestion(String expectedResult) {
+        DuckGoMainPage mainPage = openHomePage();
+        clickOnRandomSuggestion(mainPage, expectedResult);
+
+    }
+
+    @Step("Enter the query '{query}' and check if it in the URL results")
+    private void performSearchAndValidateResults(DuckGoMainPage page, String query, String expectedResult) {
+        DuckGoSearchResultsPage searchResultsPage = page.submitSearch(query);
+        Assert.assertTrue(searchResultsPage.verifyURLsContainsQuery(expectedResult));
+    }
+
+    @Step("Check that the suggestion list has 8 elements and contains the query")
+    private void performSuggestionValidationFlow(DuckGoMainPage page, String query) {
+        page.fillInput(query);
+        page.checkSuggestionsAreVisible();
+        page.checkSuggestionsSize(8);
+        List<String> suggestions = page.getAllSuggestions();
+        Assert.assertTrue(suggestions.stream().allMatch(s -> s.contains(query.toLowerCase(Locale.ROOT))));
+    }
+
+    @Step("Click on the suggestion and check that keyword is presented on the search results")
+    public void clickOnRandomSuggestion(DuckGoMainPage page, String query) {
+        page.fillInput(query);
+        DuckGoSearchResultsPage resultsPage = page.clickSuggestion(page.generateRandomIndex());
+        Assert.assertTrue(resultsPage.verifyURLsContainsQuery(query));
     }
 }

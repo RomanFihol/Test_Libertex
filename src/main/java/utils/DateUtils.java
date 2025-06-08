@@ -3,6 +3,7 @@ package utils;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class DateUtils {
 
@@ -13,13 +14,6 @@ public class DateUtils {
         return LocalDate.now()
                 .minusYears(20)
                 .format((FORMATTER));
-    }
-
-    //  Getting some future date
-    public static String getFutureDate() {
-        return LocalDate.now()
-                .plusYears(20)
-                .format(FORMATTER);
     }
 
     //  Getting 18 years old
@@ -52,8 +46,30 @@ public class DateUtils {
     }
 
     // The method for calculating age
-    public int calculateAge(String birthDateStr) {
+    public static int calculateAge(String birthDateStr) {
         LocalDate birthDay = LocalDate.parse(birthDateStr, FORMATTER);
         return Period.between(birthDay, LocalDate.now()).getYears();
+    }
+
+    public static boolean isValidDateFormat(String dateStr) {
+        try {
+            LocalDate.parse(dateStr, FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean isAgeRealistic(String dateStr) {
+        if (!isValidDateFormat(dateStr)) return false;
+
+        int age = calculateAge(dateStr);
+        return age >= 0 && age <= 120;
+    }
+
+    public static boolean isAdult(String dateStr) {
+        if (!isValidDateFormat(dateStr)) return false;
+
+        return calculateAge(dateStr) >= 18;
     }
 }

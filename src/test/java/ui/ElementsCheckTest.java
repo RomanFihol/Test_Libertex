@@ -1,17 +1,14 @@
 package ui;
 
 import base.BaseTest;
-import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pages.GoogleMainPage;
+import pages.DuckGoMainPage;
 
 public class ElementsCheckTest extends BaseTest {
-    @Parameters({"pageType"})
-    @Test
-    public void elementsCheck() throws InterruptedException {
-       GoogleMainPage googleMainPage = (GoogleMainPage) openHomePage();
-            googleMainPage.acceptCookiesIfVisible();
-            Thread.sleep(2000);
-            googleMainPage.checkAllTheMainElementsAreVisible();
+
+    @Test(description = "Check that all main elements are presented on the main page")
+    public void elementsCheck() {
+        DuckGoMainPage duckGoMainPage = openHomePage();
+        duckGoMainPage.checkAllMainElementsVisible();
     }
 }

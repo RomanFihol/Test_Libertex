@@ -1,12 +1,10 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="UI tests">
-    <test name="Google main page UI test">
-        <parameter name="baseUrl" value="https://www.google.com"/>
+    <test name="DuckGo main page UI test">
+        <parameter name="baseUrl" value="https://duckduckgo.com"/>
         <parameter name="browser" value="chrome"/>
-        <parameter name="pageType" value="GOOGLE"/>
         <classes>
             <class name="ui.ElementsCheckTest"></class>
         </classes>
     </test>
 </suite>
-          

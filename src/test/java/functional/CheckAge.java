@@ -1,68 +1,91 @@
 package functional;
 
-import base.BirthDayDataProvider;
-import exceptions.UnderAgeException;
 import io.qameta.allure.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import utils.DateUtils;
-import java.time.format.DateTimeParseException;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class CheckAge {
 
-    @Step
-    public boolean checkAge(int age) {
-        if (age < 0) {
-            throw new IllegalArgumentException("Age can not be negative");
-        } else if (age < 18) {
-            throw new UnderAgeException("Age is less than 18");
-        } else if (age > 130) {
-            throw new IllegalArgumentException("Age is impossible: " + age);
+    private static final Logger log = LoggerFactory.getLogger(CheckAge.class);
+
+    @DataProvider(name = "Adulthood")
+    public static Object[][] adultBirthDatesProvider() {
+        return new Object[][]{
+                {DateUtils.getDate20YearsAgo()},  // 20 years
+                {DateUtils.getAgeMoreThan18()},  // one day more than 18
+                {DateUtils.getAgeEqual18()},  // 18 ages
+        };
+    }
+
+    @DataProvider(name = "Young Age")
+    public static Object[][] youngBirthDatesProvider() {
+        return new Object[][]{
+                {DateUtils.getAgeZero()},  // 0 (zero) age
+                {DateUtils.getAgeLessThan18()}  // one day less than 18
+        };
+    }
+
+    @DataProvider(name = "Invalid Dates")
+    public static Object[][] invalidDates() {
+        return new Object[][]{
+                {"not-a-date"},
+                {"32-01-2020"},
+                {"1900-01-01"},
+                {"3024-12-31"},
+                {"15.20.1975"},
+                {""},
+                {null}
+        };
+    }
+
+    @Test(description = "Check Adult Age", dataProvider = "Adulthood")
+    public void checkIfAdult(String birthDay) {
+        assertTrue(validateAge(birthDay));
+    }
+
+    @Test(description = "Check Young Age", dataProvider = "Young Age")
+    public void checkIfYoung(String birthDay) {
+        assertFalse(validateAge(birthDay));
+    }
+
+    @Test(description = "Check Invalid Dates", dataProvider = "Invalid Dates")
+    public void checkInvalidDates(String birthDay) {
+        assertFalse(validateAge(birthDay));
+    }
+    @Step("Check that age is valid: {birthDay}")
+    public boolean validateAge(String birthDay) {
+        if (birthDay == null || birthDay.isBlank()) {
+            log("Birth date is null or empty.");
+            return false;
         }
+
+        if (!DateUtils.isValidDateFormat(birthDay)) {
+            log("Invalid date format: " + birthDay);
+            return false;
+        }
+
+        if (!DateUtils.isAgeRealistic(birthDay)) {
+            log("Age is out of valid range: " + birthDay);
+            return false;
+        }
+
+        if (!DateUtils.isAdult(birthDay)) {
+            log("Age is less than 18: " + birthDay);
+            return false;
+        }
+
+        log("Age is valid: " + birthDay);
         return true;
     }
 
-    @Step("Validate age: {birthDay}")
-    public boolean validateAge(String birthDay) {
-        try {
-            if (birthDay == null || birthDay.isBlank()) {
-                System.out.println("Birth date is null or empty.");
-                return false;
-            }
-            DateUtils dateUtils = new DateUtils();
-            int age = dateUtils.calculateAge(birthDay);
-
-            if (age > 120) {
-                System.out.println("Unrealistically old age: " + age);
-                return false;
-            }
-            return checkAge(age);
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid date format: " + birthDay);
-            return false;
-        } catch (UnderAgeException e) {
-            System.out.println("Underage: " + birthDay);
-            return false;
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Test(description = "Check Adult Age", dataProvider = "Adulthood", dataProviderClass = BirthDayDataProvider.class)
-    public void checkIfAdult(String birthDay) {
-        assertTrue(validateAge(birthDay), "Expected age to be valid: " + birthDay);
-    }
-
-    @Test(description = "Check Young Age", dataProvider = "Young Age", dataProviderClass = BirthDayDataProvider.class)
-    public void checkIfYoung(String birthDay) {
-        assertFalse(validateAge(birthDay), "Expected to be under 18: " + birthDay);
-    }
-
-    @Test(description = "Check Invalid Dates", dataProvider = "Invalid Dates", dataProviderClass = BirthDayDataProvider.class)
-    public void checkInvalidDates(String birthDay) {
-        assertFalse(validateAge(birthDay), "Expected invalid date to fail: " + birthDay);
+    @Step("Logging message: {message}")
+    private void log(String message) {
+        System.out.println(message);
     }
 }
